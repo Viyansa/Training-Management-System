@@ -1,8 +1,6 @@
 ﻿using System;
 
 namespace TrainingManagementSystem.Models;
-
-// STEP 9 — one payment ATTEMPT. Failures are kept in history too.
 public class Payment
 {
     public int PaymentId { get; }

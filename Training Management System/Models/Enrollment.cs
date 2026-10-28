@@ -1,9 +1,6 @@
 ﻿using System;
 
 namespace TrainingManagementSystem.Models;
-
-// STEP 3 — one enrollment record. Cancelled records are NEVER deleted;
-// they stay in the List<Enrollment> for history.
 public class Enrollment
 {
     public int EnrollmentId { get; }
@@ -14,7 +11,7 @@ public class Enrollment
     public decimal DiscountAmount { get; }
     public decimal FinalFee { get; }
     public EnrollmentStatus Status { get; private set; }
-    public bool IsPaid { get; private set; }    // flipped ONLY by PaymentService after a SUCCESSFUL payment
+    public bool IsPaid { get; private set; }    
 
     public Enrollment(int enrollmentId, string learnerId, string courseCode, DateTime enrollmentDate,
                       decimal baseFee, decimal discountAmount, decimal finalFee)
@@ -53,10 +50,6 @@ public class Enrollment
         $"base {BaseFee,10:N2} | disc {DiscountAmount,9:N2} | final {FinalFee,10:N2} | " +
         $"{Status,-9} | {(IsPaid ? "PAID" : "UNPAID")}";
 }
-
-// STEP 13 (item 49) — custom exception for a meaningful BUSINESS-RULE violation:
-// enrolling a learner who already has an ACTIVE enrollment in the same course.
-// Ordinary input validation (empty text, bad numbers) stays with conditions/TryParse.
 public class DuplicateEnrollmentException : Exception
 {
     public DuplicateEnrollmentException(string message) : base(message) { }

@@ -1,9 +1,11 @@
-﻿using System;
+﻿
+using System;
+using System.Text;
+using Microsoft.Data.SqlClient;
 using TrainingManagementSystem.Payments;
 using TrainingManagementSystem.Utilities;
-using TrainingManagementSystem.Payments;
 using TrainingManagementSystem.Services;
-using TrainingManagementSystem.Utilities;
+using TrainingManagementSystem.FileHandling;
 
 namespace TrainingManagementSystem;
 
@@ -11,31 +13,75 @@ internal class Program
 {
     static void Main()
     {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;   // so the ₹ symbol renders
-        var trainingService = new TrainingService();            // owns Course[]
-        var learnerService = new LearnerService();             // owns Dictionary<string, Learner>
-        var feeCalculator = new FeeCalculator();              // stateless fee rules
-        var enrollmentService = new EnrollmentService(trainingService, learnerService, feeCalculator); // owns List<Enrollment>
-        IPaymentProcessor onlineProcessor = new OnlinePaymentProcessor();      // implicit interface impl
-        IPaymentProcessor classroomProcessor = new ClassroomPaymentProcessor();  // explicit interface impl
-        var paymentService = new PaymentService(enrollmentService, onlineProcessor, classroomProcessor); // owns List<Payment>
-        var reportService = new ReportService(trainingService, enrollmentService, paymentService);
-
-        var menu = new MenuHandler(trainingService, learnerService, enrollmentService,
-                                   feeCalculator, paymentService, reportService);
+        Console.OutputEncoding = Encoding.UTF8;
 
         try
         {
-            menu.Run();                                   // STEP 11 menu loop
+            string connectionString =
+                @"Server=.\SQLEXPRESS;Database=TrainingManagementDB;Integrated Security=True;TrustServerCertificate=True;";
+
+            using (SqlConnection connection =
+                   new SqlConnection(connectionString))
+            {
+                connection.Open();
+                Console.WriteLine("Database connected successfully!");
+            }
+
+            var fileHandler = new LearnerFileHandler();
+
+            Console.WriteLine("=== SAVED LEARNER DETAILS ===");
+            fileHandler.DisplayLearners();
+
+            var trainingService = new TrainingService();
+            var learnerService = new LearnerService();
+            var feeCalculator = new FeeCalculator();
+
+            var enrollmentService = new EnrollmentService(
+                trainingService,
+                learnerService,
+                feeCalculator
+            );
+
+            IPaymentProcessor onlineProcessor =
+                new OnlinePaymentProcessor();
+
+            IPaymentProcessor classroomProcessor =
+                new ClassroomPaymentProcessor();
+
+            var paymentService = new PaymentService(
+                enrollmentService,
+                onlineProcessor,
+                classroomProcessor
+            );
+
+            var reportService = new ReportService(
+                trainingService,
+                enrollmentService,
+                paymentService
+            );
+
+            var menu = new MenuHandler(
+                trainingService,
+                learnerService,
+                enrollmentService,
+                feeCalculator,
+                paymentService,
+                reportService
+            );
+
+            menu.Run();
         }
-        catch (Exception ex)                              // STEP 13 (47): last-resort safety net
+        catch (Exception ex)
         {
-            Console.WriteLine($"\n[UNEXPECTED ERROR] {ex.Message}");
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(
+                $"\n[ERROR] {ex.Message}"
+            );
         }
-        finally                                           // STEP 13 (48): always runs
+        finally
         {
-            Console.WriteLine("\nTraining Management System closed (in-memory data is not persisted).");
+            Console.WriteLine(
+                "\nTraining Management System closed."
+            );
         }
     }
 }

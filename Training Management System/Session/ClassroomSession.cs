@@ -3,7 +3,7 @@ using TrainingManagementSystem.Models;
 
 namespace TrainingManagementSystem.Sessions;
 
-// STEP 7 — classroom delivery: ₹800 surcharge (Step 6 fee table).
+
 public sealed class ClassroomSession : CourseSession
 {
     public const decimal SessionCharge = 800m;

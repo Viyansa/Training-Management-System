@@ -3,8 +3,6 @@ using TrainingManagementSystem.Models;
 
 namespace TrainingManagementSystem.Services;
 
-// STEP 12 & 10 — produces reports using ONLY loops, conditions, counters and
-// arithmetic. No LINQ anywhere.
 public class ReportService
 {
     private readonly TrainingService _trainingService;
@@ -20,7 +18,7 @@ public class ReportService
         _paymentService = paymentService;
     }
 
-    // ---- Report A: course occupancy ----
+    
     public void PrintCourseOccupancy()
     {
         Console.WriteLine("\n=== REPORT A: COURSE OCCUPANCY ===");
@@ -31,13 +29,13 @@ public class ReportService
         {
             decimal pct = c.TotalSeats == 0
                 ? 0m
-                : (decimal)c.EnrolledCount * 100m / c.TotalSeats;   // (Enrolled / Total) × 100
+                : (decimal)c.EnrolledCount * 100m / c.TotalSeats;   
             Console.WriteLine($"{c.CourseCode,-8} {c.Title,-30} {c.TotalSeats,6} " +
                               $"{c.EnrolledCount,9} {c.AvailableSeats,6} {pct,10:F1}%");
         }
     }
 
-    // ---- Report B: expected fees (all ACTIVE enrollments, paid or pending) ----
+    
     public void PrintExpectedFees()
     {
         Console.WriteLine("\n=== REPORT B: EXPECTED FEES (ACTIVE ENROLLMENTS) ===");
@@ -47,11 +45,9 @@ public class ReportService
         foreach (Enrollment e in _enrollmentService.GetAll())
         {
             if (e.Status != EnrollmentStatus.Active)
-                continue;                                          // 'continue' — skip cancelled/completed
-
+                continue;                                          
             activeCount++;
-            total += e.FinalFee;                                   // includes pending payments
-
+            total += e.FinalFee;                                   
             if (e.IsPaid)
             {
                 paidCount++;
@@ -108,7 +104,7 @@ public class ReportService
         foreach (Course c in _trainingService.GetAllCourses())
         {
             int active = 0;
-            foreach (Enrollment e in _enrollmentService.GetAll())       // nested loop, no LINQ
+            foreach (Enrollment e in _enrollmentService.GetAll())       
             {
                 if (e.Status == EnrollmentStatus.Active &&
                     string.Equals(e.CourseCode, c.CourseCode, StringComparison.OrdinalIgnoreCase))

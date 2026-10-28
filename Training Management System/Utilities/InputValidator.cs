@@ -2,17 +2,15 @@
 
 namespace TrainingManagementSystem.Utilities;
 
-// STEP 2 / 6 / 11 — input helpers. Parsing uses TryParse-style 'out'
-// parameters (Step 6 requirement: "out for parsing a validated learner ID"),
-// so bad input can never throw or crash the menu.
+
 public static class InputValidator
 {
-    // ---------- Try-style validators ----------
+    
 
     public static bool TryParseInt(string? input, out int value) =>
         int.TryParse(input?.Trim(), out value);
 
-    // 'out' in action: a VALIDATED learner id travels out through the parameter.
+    
     public static bool TryParseLearnerId(string? input, out string learnerId)
     {
         learnerId = string.Empty;
@@ -28,7 +26,7 @@ public static class InputValidator
         return true;
     }
 
-    // Project rule: exactly 10 digits, first digit 6-9.
+    
     public static bool IsValidContactNumber(string? contact)
     {
         if (string.IsNullOrEmpty(contact) || contact.Length != 10) return false;
@@ -38,7 +36,7 @@ public static class InputValidator
         return true;
     }
 
-    // Simple project rule: one '@', non-empty local part, domain like "example.com".
+    
     public static bool IsValidEmail(string? email)
     {
         if (string.IsNullOrWhiteSpace(email)) return false;
@@ -46,14 +44,14 @@ public static class InputValidator
 
         int at = value.IndexOf('@');
         if (at < 1 || at == value.Length - 1) return false;
-        if (value.IndexOf('@', at + 1) >= 0) return false;   // exactly one '@'
+        if (value.IndexOf('@', at + 1) >= 0) return false;   
 
         string domain = value[(at + 1)..];
         int dot = domain.IndexOf('.');
         return dot > 0 && dot < domain.Length - 1;
     }
 
-    // ---------- Looping readers (re-prompt until valid, with clear messages) ----------
+    
 
     public static string ReadRequired(string prompt)
     {

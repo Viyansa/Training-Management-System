@@ -2,8 +2,6 @@
 
 namespace TrainingManagementSystem.Models;
 
-// STEP 1 — one training course. EnrolledCount changes ONLY through
-// IncrementEnrolled()/DecrementEnrolled() so it can never drift out of sync.
 public class Course
 {
     public string CourseCode { get; }

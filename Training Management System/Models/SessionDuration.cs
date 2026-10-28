@@ -1,9 +1,6 @@
 ﻿using System;
 
 namespace TrainingManagementSystem.Models;
-
-// STEP 7/8 — immutable VALUE type. Assigning a struct copies its value;
-// two durations with the same days are equal (value semantics).
 public readonly struct SessionDuration
 {
     public int Days { get; }

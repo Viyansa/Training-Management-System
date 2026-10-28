@@ -3,13 +3,13 @@ using TrainingManagementSystem.Models;
 
 namespace TrainingManagementSystem.Sessions;
 
-// STEP 7 — online delivery: ₹200 surcharge (Step 6 fee table).
+
 public sealed class OnlineSession : CourseSession
 {
-    public const decimal SessionCharge = 200m;    // single source of truth for this amount
+    public const decimal SessionCharge = 200m;    
 
     public OnlineSession(string courseCode, DateTime startDate, SessionDuration duration)
-        : base(courseCode, startDate, duration)   // base(...) initializes the abstract class
+        : base(courseCode, startDate, duration)   
     {
     }
 

@@ -1,7 +1,4 @@
 ﻿namespace TrainingManagementSystem.Payments;
-
-// STEP 9 — EXPLICIT interface implementation: ProcessPayment is NOT visible on
-// the class itself; it can ONLY be called through an IPaymentProcessor reference.
 public class ClassroomPaymentProcessor : IPaymentProcessor
 {
     public string ModeName => "Classroom counter (cash)";

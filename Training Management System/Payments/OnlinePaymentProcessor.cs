@@ -1,7 +1,4 @@
 ﻿namespace TrainingManagementSystem.Payments;
-
-// STEP 9 — IMPLICIT interface implementation: the method is visible on the
-// class itself AND through an IPaymentProcessor reference.
 public class OnlinePaymentProcessor : IPaymentProcessor
 {
     public const decimal TransactionLimit = 100_000m;

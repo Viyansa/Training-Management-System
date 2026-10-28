@@ -4,20 +4,20 @@ using TrainingManagementSystem.Models;
 
 namespace TrainingManagementSystem.Services;
 
-// STEP 1 & 10 — owns the course catalogue (the SINGLE copy of course data)
-// and coordinates all course operations.
+
+
 public class TrainingService
 {
-    public const string CentreName = "Apex Skill Training Centre";   // constant
+    public const string CentreName = "Apex Skill Training Centre";   
 
-    private readonly Course[] _courses;                              // STEP 1: fixed array catalogue
+    private readonly Course[] _courses;                              
 
     public TrainingService(Course[]? catalogue = null)
     {
         _courses = catalogue ?? CreateDefaultCatalogue();
     }
 
-    private static Course[] CreateDefaultCatalogue() => new Course[]   // six predefined courses
+    private static Course[] CreateDefaultCatalogue() => new Course[]   
     {
         new Course("C101", "C# Programming Fundamentals",  8000m, 10, 30),
         new Course("C102", "Advanced ASP.NET Core",       15000m, 15, 20),
@@ -40,7 +40,7 @@ public class TrainingService
         return null;
     }
 
-    // Case-insensitive "contains" search by title.
+  
     public List<Course> SearchByTitle(string text)
     {
         var hits = new List<Course>();
@@ -51,7 +51,7 @@ public class TrainingService
         return hits;
     }
 
-    // Sorts a COPY so the master array keeps its original order.
+    
     public Course[] SortByFee(bool ascending)
     {
         Course[] copy = new Course[_courses.Length];

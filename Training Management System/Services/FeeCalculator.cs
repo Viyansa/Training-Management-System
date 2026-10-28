@@ -3,8 +3,6 @@ using TrainingManagementSystem.Models;
 
 namespace TrainingManagementSystem.Services;
 
-// STEP 6 — read-only VALUE snapshot of one fee calculation.
-// Passed to display methods with the 'in' modifier (by reference, read-only).
 public readonly struct FeeSummary
 {
     public decimal BaseFee { get; }
@@ -25,17 +23,13 @@ public readonly struct FeeSummary
         FinalFee = finalFee;
     }
 
-    // Rebuilds a summary from a stored enrollment (surcharge = final − base + discount).
+    
     public static FeeSummary FromEnrollment(Enrollment enrollment) =>
         new(enrollment.BaseFee,
             enrollment.DiscountAmount,
             enrollment.FinalFee - enrollment.BaseFee + enrollment.DiscountAmount,
             enrollment.FinalFee);
 }
-
-// STEP 6 & 10 — all fee rules in one place.
-// NOTE: the ₹200/₹800 surcharge AMOUNTS live in OnlineSession/ClassroomSession
-// (single source of truth) and reach this class through polymorphism.
 public class FeeCalculator
 {
     public const decimal EarlyBirdDiscountPercent = 10m;
@@ -43,14 +37,14 @@ public class FeeCalculator
     public const int EarlyBirdDaysAhead = 14;
     public const int GroupSizeMinimum = 3;
 
-    // ---- Overload 1 (item 25): base fee only, no discounts ----
+    
     public (decimal BaseFee, decimal DiscountAmount, decimal FinalFee) CalculateFee(decimal baseFee)
     {
         EnsureNonNegative(baseFee, nameof(baseFee));
         return (baseFee, 0m, baseFee);
     }
 
-    // ---- Overload 2: base fee + session surcharge ----
+   
     public (decimal BaseFee, decimal DiscountAmount, decimal FinalFee) CalculateFee(decimal baseFee, decimal sessionSurcharge)
     {
         var (b, d, f) = CalculateFee(baseFee);
@@ -58,9 +52,6 @@ public class FeeCalculator
         return (b, d, f + sessionSurcharge);
     }
 
-    // ---- Overload 3 (item 26): full rules ----
-    // Both discounts are computed against the BASE fee and simply added together
-    // (not compounded), then the session surcharge is added (item 28 + fee table).
     public (decimal BaseFee, decimal DiscountAmount, decimal FinalFee) CalculateFee(
         decimal baseFee, bool earlyBirdEligible, bool groupEligible, decimal sessionSurcharge)
     {
@@ -74,7 +65,7 @@ public class FeeCalculator
         if (discount < 0m) throw new InvalidOperationException("Total discount cannot be negative.");
 
         decimal finalFee = baseFee - discount + sessionSurcharge;
-        return (baseFee, discount, finalFee);              // named tuple (item 27)
+        return (baseFee, discount, finalFee);              
     }
 
     public static bool IsEarlyBird(DateTime courseStartDate) =>
@@ -83,7 +74,7 @@ public class FeeCalculator
     public static bool IsGroupEligible(int learnersEnrollingTogether) =>
         learnersEnrollingTogether >= GroupSizeMinimum;
 
-    // 'in' — passes the read-only struct BY REFERENCE (no copy, cannot be mutated).
+   
     public string FormatBreakdown(in FeeSummary summary)
     {
         return string.Join(Environment.NewLine, new[]
